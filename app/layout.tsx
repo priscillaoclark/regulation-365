@@ -1,5 +1,6 @@
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 import HeaderAuth from "@/components/header-auth";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { GeistSans } from "geist/font/sans";
@@ -45,6 +46,7 @@ export default function RootLayout({
               <div className="flex flex-col gap-20 max-w-5xl p-5">
                 {children}
                 <SpeedInsights />
+                <Analytics />
               </div>
 
               <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
