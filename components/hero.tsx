@@ -100,7 +100,7 @@ const ComplianceLanding: React.FC = () => {
         </div>
       </section>
 
-      <section id="pricing" className="bg-secondary py-16">
+      {/*<section id="pricing" className="bg-secondary py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Simple, Transparent Pricing
@@ -134,11 +134,11 @@ const ComplianceLanding: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section>*/}
 
       <section
         id="contact"
-        className="container mx-auto px-4 py-16 text-center"
+        className="container mx-auto px-4 py-16 text-center bg-secondary"
       >
         <h2 className="text-3xl font-bold mb-8">
           Ready to Simplify Your Regulatory Change Process?
