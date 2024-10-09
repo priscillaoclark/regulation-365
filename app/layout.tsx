@@ -51,7 +51,7 @@ export default function RootLayout({
                 <Analytics />
               </div>
 
-              <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
+              <footer className="bg-lime-400 text-black w-full flex items-center justify-center border-t mx-auto text-center text-s gap-8 py-16">
                 <p>
                   &copy; {new Date().getFullYear()} Regulation 365. All rights
                   reserved.

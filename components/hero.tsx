@@ -26,7 +26,7 @@ const Feature: React.FC<FeatureProps> = ({ icon, title, description }) => (
 const ComplianceLanding: React.FC = () => {
   return (
     <div className="w-full">
-      <section className="container mx-auto px-4 py-16 text-center">
+      <section className="container mx-auto px-4 py-16 text-center border-b border-b-foreground/10">
         <h1 className="text-5xl font-bold mb-6">
           Navigate Financial Regulations with Confidence
         </h1>
@@ -34,7 +34,7 @@ const ComplianceLanding: React.FC = () => {
           Stay compliant with complex regulations and simplify your regulatory
           change process.
         </p>
-        <button className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition duration-300">
+        <button className="bg-lime-400 text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-lime-400/50 transition duration-300">
           Coming Soon
         </button>
       </section>
@@ -45,32 +45,32 @@ const ComplianceLanding: React.FC = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Feature
-            icon={<ShieldCheck size={48} className="text-primary" />}
+            icon={<ShieldCheck size={48} className="text-lime-400" />}
             title="Real-time Updates"
             description="Stay up-to-date with the latest US financial service regulations."
           />
           <Feature
-            icon={<Brain size={48} className="text-primary" />}
+            icon={<Brain size={48} className="text-lime-400" />}
             title="AI Summarization and Chat"
             description="Simplify complex legal jargon and ask questions in our custom chatbot."
           />
           <Feature
-            icon={<Globe size={48} className="text-primary" />}
+            icon={<Globe size={48} className="text-lime-400" />}
             title="Broad Coverage"
             description="Understand requirements across multiple products with our comprehensive database."
           />
           <Feature
-            icon={<Globe size={48} className="text-primary" />}
+            icon={<Globe size={48} className="text-lime-400" />}
             title="Personalization"
             description="Customized to fit into your existing workflows and taxonomies."
           />
           <Feature
-            icon={<Zap size={48} className="text-primary" />}
+            icon={<Zap size={48} className="text-lime-400" />}
             title="Proactive Alerts"
             description="Get proactive alerts about upcoming regulatory changes, so you’re always ahead."
           />
           <Feature
-            icon={<CircleDollarSign size={48} className="text-primary" />}
+            icon={<CircleDollarSign size={48} className="text-lime-400" />}
             title="Reduce Compliance Costs"
             description="Reduce the number of irrelevant regulations you need to review."
           />
@@ -79,9 +79,7 @@ const ComplianceLanding: React.FC = () => {
 
       <section id="agencies" className="container mx-auto px-4 py-16">
         <div className="mb-12">
-          <h2 className="text-3xl font-semibold mb-4">
-            Covered Regulatory Agencies
-          </h2>
+          <h2 className="text-3xl font-semibold mb-4">Covered Agencies</h2>
           <p className="mb-4 text-muted-foreground">
             Regulation 365 aggregates regulatory data from a wide range of US
             financial services agencies to provide the most comprehensive
@@ -147,7 +145,7 @@ const ComplianceLanding: React.FC = () => {
           Get in touch with our team of experts today and see how Regulation 365
           can help your financial service business stay compliant.
         </p>
-        <button className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition duration-300">
+        <button className="bg-lime-400 text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-lime-400/50 transition duration-300">
           Coming Soon
         </button>
       </section>
