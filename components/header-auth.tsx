@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { createClient } from "@/utils/supabase/server";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export default async function AuthButton() {
   const {
@@ -57,6 +58,7 @@ export default async function AuthButton() {
     </div>
   ) : (
     <div className="flex gap-2">
+      <ThemeSwitcher />
       <Button asChild size="sm" variant={"outline"}>
         <Link href="/sign-in">Sign in</Link>
       </Button>
