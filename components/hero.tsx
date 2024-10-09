@@ -35,7 +35,9 @@ const ComplianceLanding: React.FC = () => {
           change process.
         </p>
         <button className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition duration-300">
-          Get Started Free
+          <Link key="Contact Us" href="/contact">
+            <p className="hidden md:block">Contact Us</p>
+          </Link>
         </button>
       </section>
 
@@ -148,7 +150,9 @@ const ComplianceLanding: React.FC = () => {
           can help your financial service business stay compliant.
         </p>
         <button className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition duration-300">
-          Contact Us
+          <Link key="Contact Us" href="/contact">
+            <p className="hidden md:block">Contact Us</p>
+          </Link>
         </button>
       </section>
     </div>
