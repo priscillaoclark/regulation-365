@@ -20,8 +20,10 @@ async function fetchFeeds(): Promise<Feed[]> {
   const parser = new Parser();
   const urls = [
     "https://www.globalfinregblog.com/feed/",
-    "https://www.morganlewis.com/rss/blogs?category=finreg&amp;top=20",
+    "https://www.morganlewis.com/rss/blogs?category=finreg&amp;top=15",
     "https://www.gtlaw-financialservicesobserver.com/feed/",
+    "https://mco.mycomplianceoffice.com/blog/rss.xml",
+    "https://www.globalcompliancenews.com/feed/",
   ];
 
   const feeds = await Promise.all(

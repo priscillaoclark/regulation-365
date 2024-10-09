@@ -57,7 +57,13 @@ const RSSFeed: React.FC<RSSFeedProps> = ({ feeds }) => {
                       : feed.title === "Financial Services Observer" ||
                           item.link.includes("gtlaw-financialservicesobserver")
                         ? "Financial Services Observer (Greenberg Traurig)"
-                        : "N/A"}
+                        : feed.title === "MyComplianceOffice Blog" ||
+                            item.link.includes("mycomplianceoffice")
+                          ? "MyComplianceOffice Blog"
+                          : feed.title === "Global Compliance News" ||
+                              item.link.includes("globalcompliancenews")
+                            ? "Global Compliance News (Baker McKenzie)"
+                            : "N/A"}
                 </p>
               </li>
             ))}
