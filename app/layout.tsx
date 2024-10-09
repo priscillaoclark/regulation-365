@@ -16,7 +16,7 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Regulation 365",
-  description: "Insert tagline here",
+  description: "Navigate Financial Regulations with Confidence",
 };
 
 export default function RootLayout({
