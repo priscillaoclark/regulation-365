@@ -17,13 +17,15 @@
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "framer-motion": "^11.11.7",
     "geist": "^1.2.1",
     "lucide-react": "^0.436.0",
     "next": "latest",
     "next-themes": "^0.3.0",
     "prettier": "^3.3.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "rss-parser": "^3.13.0"
   },
   "devDependencies": {
     "@types/node": "20.10.6",
