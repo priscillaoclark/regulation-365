@@ -7,15 +7,15 @@ export default async function AppLogo() {
         className="hidden dark:block"
         src="/logo/white-logo.svg"
         alt="dark-mode-logo"
-        width={75}
-        height={75}
+        width={60}
+        height={60}
       />
       <Image
         className="block dark:hidden"
         src="/logo/black-logo.svg"
         alt="light-mode-logo"
-        width={75}
-        height={75}
+        width={60}
+        height={60}
       />
     </div>
   );
