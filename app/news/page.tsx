@@ -8,6 +8,7 @@ interface FeedItem {
   link: string;
   pubDate: string;
   contentSnippet: string;
+  source: string; // Add the source property
 }
 
 interface Feed {
@@ -45,7 +46,7 @@ async function fetchFeeds(): Promise<Feed[]> {
   const allItems = feeds.flatMap((feed) =>
     feed.items.map((item) => ({
       ...item,
-      sourceTitle: feed.title,
+      source: feed.title,
     }))
   );
 
