@@ -95,7 +95,9 @@ const RSSFeed: React.FC<RSSFeedProps> = ({ feeds }) => {
                           : feed.title === "Global Compliance News" ||
                               item.link.includes("globalcompliancenews")
                             ? "Global Compliance News (Baker McKenzie)"
-                            : "N/A"}
+                            : item.link.includes("wwqqjxqkqqvdy67ypt4s")
+                              ? "Risk & Compliance Journal (Deloitte / WSJ)"
+                              : "N/A"}
                 </p>
                 <p className="leading-relaxed mb-4">
                   {item.contentSnippet.replace(/... Continue Reading/g, "... ")}

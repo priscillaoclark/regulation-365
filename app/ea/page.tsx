@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import cfpb_client from "@/components/ea/cfpb";
-import fincen from "@/components/ea/fincen";
-import fdic from "@/components/ea/fdic";
-import frb from "@/components/ea/frb";
-import occ from "@/components/ea/occ";
-import ofac from "@/components/ea/ofac";
-import sec from "@/components/ea/sec";
+import frb_client from "@/components/ea/frb";
+import fincen_client from "@/components/ea/fincen";
+import fdic_client from "@/components/ea/fdic";
+import occ_client from "@/components/ea/occ";
+import ofac_client from "@/components/ea/ofac";
+import sec_client from "@/components/ea/sec";
 
 const components: { [key: string]: React.ComponentType } = {
   CFPB: cfpb_client,
+  FRB: frb_client,
 };
 
 export default function Home() {

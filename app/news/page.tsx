@@ -55,7 +55,19 @@ async function fetchFeeds(): Promise<Feed[]> {
     (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
   );
 
-  // Return a single feed object with combined and sorted items
+  // Remove anything older than 3 months
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  allItems.filter((item) => new Date(item.pubDate) > threeMonthsAgo);
+
+  // Filter out specific titles
+  allItems.filter(
+    (item) =>
+      !item.title.includes("Action Required: Confirm Your WSJ Newsletter") &&
+      !item.title.includes("Action Required: Set a password")
+  );
+
+  // Return filtered and sorted items
   return [
     {
       title: "Combined Feed",
@@ -71,7 +83,10 @@ export default async function Home() {
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
         <h1 className="text-4xl font-bold mb-6">Regulatory News</h1>
-        <p>Current topics aggregated from trustworthy legal firms.</p>
+        <p>
+          Current topics aggregated from trustworthy legal and professional
+          services firms.
+        </p>
         <hr className="w-full border-t-2 border-gray-300 mt-6 mb-6" />
         {/* Pass the fetched RSS feeds as props to the RSSFeed component */}
         <RSSFeed feeds={feeds} />

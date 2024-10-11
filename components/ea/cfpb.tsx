@@ -22,39 +22,10 @@ interface CfpbRecord {
   products: string;
 }
 
-const CfpbClient = () => {
+const cfpb_client = () => {
   const [data, setData] = useState<CfpbRecord[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-
-  // Function to toggle between light and dark themes
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  };
-
-  // Check system or local storage for dark mode preference on component load
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-
-    if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
-    } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -213,4 +184,4 @@ const CfpbClient = () => {
   );
 };
 
-export default CfpbClient;
+export default cfpb_client;
