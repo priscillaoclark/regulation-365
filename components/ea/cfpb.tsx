@@ -125,7 +125,7 @@ const CfpbClient = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-100 dark:bg-gray-900">
+    <div className="p-8 bg-neutral-100 dark:bg-neutral-900">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-center dark:text-white">
           Consumer Financial Protection Bureau Actions
@@ -135,7 +135,7 @@ const CfpbClient = () => {
         {data.map((record, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow"
+            className="bg-white dark:bg-neutral-800 dark:text-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow"
           >
             <h3 className="text-xl font-bold mb-2 text-lime-500">
               {record.title}
