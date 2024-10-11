@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import cfpb_client from "@/components/ea/cfpb";
 import fincen from "@/components/ea/fincen";
@@ -28,29 +27,44 @@ export default function Home() {
     ? components[selectedComponent]
     : null;
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedComponent(e.target.value as keyof typeof components);
+  };
+
   return (
-    <div className="flex-1 w-full flex flex-col gap-12">
+    <div className="flex-1 w-full flex flex-col gap-6 p-4 md:gap-12 md:p-8 lg:max-w-screen-lg mx-auto">
       <div className="w-full">
-        <h1 className="text-4xl font-bold mb-6">Recent Enforcement Actions</h1>
-        <div className="flex justify-between mb-6">
-          {Object.keys(components).map((folder) => (
-            <button
-              key={folder}
-              onClick={() => setSelectedComponent(folder)}
-              className="px-4 py-2 text-black bg-lime-400 rounded hover:bg-lime-600 mx-2"
-            >
-              {folder}
-            </button>
-          ))}
+        <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
+          Recent Enforcement Actions
+        </h1>
+
+        {/* Dropdown Menu: Compact and Centered */}
+        <div className="w-64 ml-0 mb-4 md:mb-6">
+          <select
+            onChange={handleSelectChange}
+            className="w-full px-4 py-3 text-sm md:text-base text-black bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-lime-500"
+          >
+            <option value="" disabled selected>
+              Select an agency
+            </option>
+            {Object.keys(components).map((folder) => (
+              <option key={folder} value={folder}>
+                {folder}
+              </option>
+            ))}
+          </select>
         </div>
-        <hr className="w-full border-t-2 border-gray-300 mb-6" />
-        <div className="w-full">
+
+        <hr className="w-full border-t-2 border-gray-300 mb-4 md:mb-6 lg:my-8" />
+
+        {/* Content Section: Full Width */}
+        <div className="w-full mx-auto mt-6">
           {ComponentToRender ? (
             <ComponentToRender />
           ) : (
-            <h2>
-              Click on a button above to see recent enforcement actions for that
-              agency. Summary statistics coming soon!
+            <h2 className="text-sm md:text-base lg:text-lg">
+              Select an agency from the dropdown menu to see recent enforcement
+              actions. Summary statistics coming soon!
             </h2>
           )}
         </div>
