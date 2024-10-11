@@ -128,7 +128,7 @@ const CfpbClient = () => {
     <div className="p-8 bg-neutral-100 dark:bg-neutral-900">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-center dark:text-white">
-          Consumer Financial Protection Bureau Actions
+          Consumer Financial Protection Bureau
         </h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
