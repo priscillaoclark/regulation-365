@@ -38,7 +38,7 @@ const ComplianceLanding: React.FC = () => {
         <button className="bg-lime-400 text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-lime-400/50 transition duration-300">
           <Link href="/news">Current News</Link>
         </button>
-        <div className="mt-16 text-2xl font-semibold text-lime-400 hover:underline">
+        <div className="mt-16 text-2xl font-semibold text-lime-500 hover:underline">
           Webapp coming soon!
         </div>
       </section>
@@ -49,32 +49,32 @@ const ComplianceLanding: React.FC = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Feature
-            icon={<ShieldCheck size={48} className="text-lime-400" />}
+            icon={<ShieldCheck size={48} className="text-lime-500" />}
             title="Real-time Updates"
             description="Stay up-to-date with the latest US financial service regulations."
           />
           <Feature
-            icon={<Brain size={48} className="text-lime-400" />}
+            icon={<Brain size={48} className="text-lime-500" />}
             title="AI Summarization and Chat"
             description="Simplify complex legal jargon and ask questions in our custom chatbot."
           />
           <Feature
-            icon={<Globe size={48} className="text-lime-400" />}
+            icon={<Globe size={48} className="text-lime-500" />}
             title="Broad Coverage"
             description="Understand requirements across multiple products with our comprehensive database."
           />
           <Feature
-            icon={<Globe size={48} className="text-lime-400" />}
+            icon={<Globe size={48} className="text-lime-500" />}
             title="Personalization"
             description="Customized to fit into your existing workflows and taxonomies."
           />
           <Feature
-            icon={<Zap size={48} className="text-lime-400" />}
+            icon={<Zap size={48} className="text-lime-500" />}
             title="Proactive Alerts"
             description="Get proactive alerts about upcoming regulatory changes, so you’re always ahead."
           />
           <Feature
-            icon={<CircleDollarSign size={48} className="text-lime-400" />}
+            icon={<CircleDollarSign size={48} className="text-lime-500" />}
             title="Reduce Compliance Costs"
             description="Reduce the number of irrelevant regulations you need to review."
           />

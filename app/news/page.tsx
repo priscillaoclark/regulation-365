@@ -67,10 +67,14 @@ export default async function Home() {
   const feeds = await fetchFeeds(); // Fetch feeds on the server
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold mb-6">Current Regulatory News</h1>
-      {/* Pass the fetched RSS feeds as props to the RSSFeed component */}
-      <RSSFeed feeds={feeds} />
+    <div className="flex-1 w-full flex flex-col gap-12">
+      <div className="w-full">
+        <h1 className="text-4xl font-bold mb-6">Regulatory News</h1>
+        <p>Current topics aggregated from trustworthy legal firms.</p>
+        <hr className="w-full border-t-2 border-gray-300 mt-6 mb-6" />
+        {/* Pass the fetched RSS feeds as props to the RSSFeed component */}
+        <RSSFeed feeds={feeds} />
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from "react";
 
-const ContactPage: React.FC = () => {
+const Privacy: React.FC = () => {
   return (
     <div
       style={{
@@ -15,4 +15,4 @@ const ContactPage: React.FC = () => {
   );
 };
 
-export default ContactPage;
+export default Privacy;
