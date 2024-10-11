@@ -101,7 +101,7 @@ const CfpbClient = () => {
             href={doc.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-lime-400 hover:underline"
+            className="text-lime-500 hover:underline"
           >
             {doc.text}
           </a>
@@ -137,7 +137,7 @@ const CfpbClient = () => {
             key={index}
             className="bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow"
           >
-            <h3 className="text-xl font-bold mb-2 text-lime-600">
+            <h3 className="text-xl font-bold mb-2 text-lime-500">
               {record.title}
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">
@@ -145,14 +145,14 @@ const CfpbClient = () => {
             </p>
             <p className="mb-4">{record.summary}</p>
             <button
-              className="text-lime-400 hover:underline mb-2"
+              className="text-lime-500 hover:underline mb-2"
               onClick={() => window.open(record.link, "_blank")}
             >
               View Full Case
             </button>
 
             <details className="mb-4">
-              <summary className="cursor-pointer text-lime-400 hover:underline">
+              <summary className="cursor-pointer text-lime-500 hover:underline">
                 More Details
               </summary>
               <p className="mt-2">{record.description}</p>
@@ -163,7 +163,7 @@ const CfpbClient = () => {
                 <strong>Press Release: </strong>
                 <a
                   href={record.press_release}
-                  className="text-lime-400 hover:underline"
+                  className="text-lime-500 hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -175,7 +175,7 @@ const CfpbClient = () => {
                 {record.case_docket ? (
                   <a
                     href={record.case_docket}
-                    className="text-lime-400 hover:underline"
+                    className="text-lime-500 hover:underline"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
