@@ -11,12 +11,6 @@ import sec from "@/components/ea/sec";
 
 const components: { [key: string]: React.ComponentType } = {
   CFPB: cfpb_client,
-  FDIC: fdic,
-  FINCEN: fincen,
-  FRB: frb,
-  OCC: occ,
-  OFAC: ofac,
-  SEC: sec,
 };
 
 export default function Home() {
@@ -64,7 +58,7 @@ export default function Home() {
           ) : (
             <h2 className="text-sm md:text-base lg:text-lg">
               Select an agency from the dropdown menu to see recent enforcement
-              actions. Summary statistics coming soon!
+              actions. Summary statistics and additional agencies coming soon.
             </h2>
           )}
         </div>
