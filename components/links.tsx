@@ -12,14 +12,6 @@ const Links = () => {
 
   return (
     <div className="relative">
-      {/* Button for toggling the visibility of links on mobile */}
-      <button
-        onClick={toggleLinks}
-        className="block md:hidden px-4 py-2 bg-lime-400 text-black rounded-md focus:outline-none"
-      >
-        Menu
-      </button>
-
       {/* Links - visible on larger screens, collapsible on mobile */}
       <div
         className={`${
