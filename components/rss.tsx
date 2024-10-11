@@ -51,7 +51,7 @@ const RSSFeed: React.FC<RSSFeedProps> = ({ feeds }) => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full p-4">
+    <div className="flex flex-col min-h-screen w-full p-4 bg-gray-100 dark:bg-gray-900">
       <div className="w-full h-full">
         {feeds.map((feed, index) => (
           <div key={index} className="mb-8">
