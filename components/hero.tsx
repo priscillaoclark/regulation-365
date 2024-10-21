@@ -38,9 +38,15 @@ const ComplianceLanding: React.FC = () => {
         <button className="bg-lime-400 text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-lime-400/50 transition duration-300">
           <Link href="/news">Current News</Link>
         </button>
-        <div className="mt-16 text-2xl font-semibold text-lime-500 hover:underline">
+        <div className="mt-16 text-2xl font-semibold text-lime-500">
           Webapp coming soon!
         </div>
+        <Link
+          href="/ea"
+          className="mt-16 text-xl text-lime-500 hover:underline"
+        >
+          See a sample of recent enforcement action data.
+        </Link>
       </section>
 
       <section id="features" className="container mx-auto px-4 py-16">

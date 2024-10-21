@@ -30,9 +30,7 @@ export default function Home() {
   return (
     <div className="flex-1 w-full flex flex-col gap-6 p-4 md:gap-12 md:p-8 lg:max-w-screen-lg mx-auto">
       <div className="w-full">
-        <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
-          Recent Enforcement Actions
-        </h1>
+        <h1 className="text-4xl font-bold mb-6">Recent Enforcement Actions</h1>
 
         {/* Dropdown Menu: Compact and Centered */}
         <div className="w-64 ml-0 mb-4 md:mb-6">
