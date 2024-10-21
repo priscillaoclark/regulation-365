@@ -7,10 +7,10 @@ export async function GET() {
     const supabase = createClient();
 
     // Fetch data from the "cfpb" table
-    const { data: ea_cfpb, error } = await supabase
-      .from("ea_cfpb")
+    const { data: ea_fdic, error } = await supabase
+      .from("ea_fdic")
       .select()
-      .order("date", { ascending: false })
+      .order("issued_date", { ascending: false })
       .limit(10);
 
     // If there's an error with the query, log it and return an error response
@@ -23,7 +23,7 @@ export async function GET() {
     }
 
     // If the query is successful, return the data as JSON
-    return NextResponse.json(ea_cfpb);
+    return NextResponse.json(ea_fdic);
   } catch (err) {
     // Log any unexpected errors
     console.error("Unexpected error:", err);

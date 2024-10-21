@@ -102,7 +102,7 @@ const cfpb_client = () => {
           Consumer Financial Protection Bureau
         </h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {data.map((record, index) => (
           <div
             key={index}

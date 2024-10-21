@@ -3,8 +3,8 @@
 import { useState } from "react";
 import cfpb_client from "@/components/ea/cfpb";
 import frb_client from "@/components/ea/frb";
-import fincen_client from "@/components/ea/fincen";
 import fdic_client from "@/components/ea/fdic";
+import fincen_client from "@/components/ea/fincen";
 import occ_client from "@/components/ea/occ";
 import ofac_client from "@/components/ea/ofac";
 import sec_client from "@/components/ea/sec";
@@ -12,6 +12,7 @@ import sec_client from "@/components/ea/sec";
 const components: { [key: string]: React.ComponentType } = {
   CFPB: cfpb_client,
   FRB: frb_client,
+  FDIC: fdic_client,
 };
 
 export default function Home() {
