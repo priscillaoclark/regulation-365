@@ -19,6 +19,7 @@
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "d3": "^7.9.0",
     "framer-motion": "^11.11.7",
     "geist": "^1.2.1",
     "lucide-react": "^0.436.0",
@@ -32,6 +33,7 @@
     "rss-parser": "^3.13.0"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@types/node": "20.10.6",
     "@types/react": "18.2.46",
     "@types/react-dom": "18.2.18",
