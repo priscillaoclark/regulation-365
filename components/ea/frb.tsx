@@ -80,6 +80,9 @@ const frb_client = () => {
           <p className="text-m">
             <strong>Effective Date:</strong> {record.effective_date}
           </p>
+          <p className="text-m">
+            <strong>Keywords:</strong> {record.keywords}
+          </p>
           {record.termination_date && (
             <p className="text-m">
               <strong>Termination Date:</strong> {record.termination_date}
