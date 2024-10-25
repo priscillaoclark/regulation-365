@@ -13,6 +13,9 @@ interface FrbRecord {
   url: string;
   type: string;
   ai_summary: string;
+  attachment_url: string;
+  attachment_summary: string;
+  keywords: string;
 }
 
 const frb_client = () => {
@@ -83,14 +86,29 @@ const frb_client = () => {
             </p>
           )}
           <div className="text-m">
-            <strong>AI Summary:</strong>
+            <strong>Overview:</strong>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {record.ai_summary}
             </ReactMarkdown>{" "}
             {/* Render ai_summary as markdown */}
           </div>
+          <details className="text-m">
+            <summary className="cursor-pointer text-lime-500 hover:underline">
+              Additional Details
+            </summary>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {record.attachment_summary}
+            </ReactMarkdown>
+          </details>
+          <Link
+            href={record.attachment_url}
+            className="text-lime-500 hover:underline"
+          >
+            Download Document
+          </Link>
+          <br></br>
           <Link href={record.url} className="text-lime-500 hover:underline">
-            More Info
+            More Info on FRB Website
           </Link>
         </div>
       ))}
