@@ -7,11 +7,12 @@ import Link from "next/link";
 
 export default function Login({ searchParams }: { searchParams: Message }) {
   return (
-    <div className="flex justify-center mt-16">
-      <form className="flex flex-col min-w-64 max-w-md p-6 mx-auto">
+    <div className="w-full justify-center p-6 mt-10">
+      <form className="">
         <h1 className="text-2xl font-medium">Sign in</h1>
-        <p className="text-xs text-foreground italic">
-          New app sign ups coming soon! <br />
+        <br />
+        <p className="text-s text-foreground italic">
+          New app sign-ups coming soon! <br />
           <Link
             className="mt-6 hover:underline text-lime-500 font-bold"
             href="https://regulation-365.ghost.io/#/portal/signup"
