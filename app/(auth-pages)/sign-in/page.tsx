@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Login({ searchParams }: { searchParams: Message }) {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mt-16">
       <form className="flex flex-col min-w-64 max-w-md p-6 mx-auto">
         <h1 className="text-2xl font-medium">Sign in</h1>
         <p className="text-xs text-foreground italic">
