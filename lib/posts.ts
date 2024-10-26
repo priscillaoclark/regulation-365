@@ -18,7 +18,7 @@ const api = new GhostContentAPI({
 export async function fetchLastFivePosts(): Promise<Post[]> {
   try {
     const posts = await api.posts.browse({
-      limit: 5,
+      limit: 3,
       order: "published_at DESC",
       fields: ["id", "title", "excerpt", "feature_image", "url"], // Include url field
     });
