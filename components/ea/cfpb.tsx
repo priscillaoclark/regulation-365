@@ -167,16 +167,6 @@ const cfpb_client = () => {
               <strong>Products:</strong>
               {parseProducts(record.products)}
             </ul>
-
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-white text-sm ${
-                record.status === "Pending Litigation"
-                  ? "bg-red-600"
-                  : "bg-green-500"
-              }`}
-            >
-              {record.status}
-            </span>
           </div>
         ))}
       </div>
