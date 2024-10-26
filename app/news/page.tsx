@@ -1,4 +1,3 @@
-// app/page.tsx
 import Parser from "rss-parser";
 import RSSFeed from "@/components/rss"; // Import the RSSFeed component
 
@@ -25,6 +24,10 @@ async function fetchFeeds(): Promise<Feed[]> {
     "https://www.gtlaw-financialservicesobserver.com/feed/",
     "https://mco.mycomplianceoffice.com/blog/rss.xml",
     "https://www.globalcompliancenews.com/feed/",
+    "https://www.consumerfinance.gov/about-us/newsroom/feed/",
+    "https://public.govdelivery.com/topics/USFDIC_26/feed.rss",
+    "https://www.federalreserve.gov/feeds/press_all.xml",
+    "https://www.sec.gov/news/pressreleases.rss",
   ];
 
   const feeds = await Promise.all(
@@ -55,13 +58,15 @@ async function fetchFeeds(): Promise<Feed[]> {
     (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
   );
 
-  // Remove anything older than 3 months
-  const threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-  allItems.filter((item) => new Date(item.pubDate) > threeMonthsAgo);
+  // Remove items older than 1 month
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  const recentItems = allItems.filter(
+    (item) => new Date(item.pubDate) > oneMonthAgo
+  );
 
   // Filter out specific titles
-  allItems.filter(
+  const filteredItems = recentItems.filter(
     (item) =>
       !item.title.includes("Action Required: Confirm Your WSJ Newsletter") &&
       !item.title.includes("Action Required: Set a password")
@@ -71,7 +76,7 @@ async function fetchFeeds(): Promise<Feed[]> {
   return [
     {
       title: "Combined Feed",
-      items: allItems,
+      items: filteredItems,
     },
   ];
 }
@@ -84,8 +89,8 @@ export default async function Home() {
       <div className="w-full">
         <h1 className="text-4xl font-bold mb-6">Regulatory News</h1>
         <p>
-          Current topics aggregated from trustworthy legal and professional
-          services firms.
+          Current topics aggregated from regulators and trustworthy
+          legal/professional services firms.
         </p>
         <hr className="w-full border-t-2 border-gray-300 mt-6 mb-6" />
         {/* Pass the fetched RSS feeds as props to the RSSFeed component */}

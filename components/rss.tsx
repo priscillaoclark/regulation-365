@@ -97,7 +97,17 @@ const RSSFeed: React.FC<RSSFeedProps> = ({ feeds }) => {
                             ? "Global Compliance News (Baker McKenzie)"
                             : item.link.includes("wwqqjxqkqqvdy67ypt4s")
                               ? "Risk & Compliance Journal (Deloitte / WSJ)"
-                              : "N/A"}
+                              : item.link.includes("consumerfinance.gov")
+                                ? "Consumer Financial Protection Bureau (CFPB)"
+                                : item.link.includes("USFDIC")
+                                  ? "Federal Deposit Insurance Corporation (FDIC)"
+                                  : item.link.includes("federalreserve")
+                                    ? "Federal Reserve Board (FRB)"
+                                    : item.link.includes("occ.gov")
+                                      ? "Office of the Comptroller of the Currency (OCC)"
+                                      : item.link.includes("sec.gov")
+                                        ? "Securities and Exchange Commission (SEC)"
+                                        : "N/A"}
                 </p>
                 <p className="leading-relaxed mb-4">
                   {item.contentSnippet.replace(/... Continue Reading/g, "... ")}
