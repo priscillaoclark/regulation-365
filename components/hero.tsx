@@ -1,5 +1,9 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Carousel from "./carousel";
+import { fetchLastFivePosts, Post } from "../lib/posts";
 
 import {
   ShieldCheck,
@@ -25,6 +29,14 @@ const Feature: React.FC<FeatureProps> = ({ icon, title, description }) => (
 );
 
 const ComplianceLanding: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    fetchLastFivePosts().then((data) => {
+      setPosts(data);
+    });
+  }, []);
+
   return (
     <div className="w-full">
       <section className="container mx-auto px-4 py-16 text-center border-b border-b-foreground/10">
@@ -36,11 +48,9 @@ const ComplianceLanding: React.FC = () => {
           change process.
         </p>
         <button className="bg-lime-400 text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-lime-400/50 transition duration-300">
-          <Link href="/news">Current News</Link>
+          <Link href="/news">Recent News</Link>
         </button>
-        <div className="mt-16 text-2xl font-semibold text-lime-500">
-          Webapp coming soon!
-        </div>
+        <div className="mt-16 text-2xl font-semibold">Webapp coming soon!</div>
         <Link
           href="/ea"
           className="mt-16 text-xl text-lime-500 hover:underline"
@@ -49,8 +59,9 @@ const ComplianceLanding: React.FC = () => {
         </Link>
       </section>
 
-      <section id="features" className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">
+      {/* Features section */}
+      <section id="features" className="container mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold text-center mb-10">
           Why Choose Regulation 365?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -87,16 +98,22 @@ const ComplianceLanding: React.FC = () => {
         </div>
       </section>
 
-      <section id="agencies" className="container mx-auto px-4 py-16">
-        <div className="mb-12">
+      {/* Posts carousel section */}
+      <section id="posts" className="container mx-auto px-4">
+        <Carousel posts={posts} />
+      </section>
+
+      {/* Covered agencies section */}
+      <section id="agencies" className="container mx-auto px-4 py-12 mb-6">
+        <div className="mb-1">
           <h2 className="text-3xl font-semibold mb-4">Covered Agencies</h2>
-          <p className="mb-4 text-muted-foreground">
+          <p className="mb-4">
             Regulation 365 aggregates regulatory data from a wide range of US
             financial services agencies to provide the most comprehensive
             coverage for your business. Some of the key agencies we cover
             include:
           </p>
-          <ul className="list-disc pl-6 text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-x-8">
+          <ul className="list-disc pl-6 grid grid-cols-1 md:grid-cols-2 gap-x-8">
             <li>Consumer Financial Protection Bureau (CFPB)</li>
             <li>Federal Deposit Insurance Corporation (FDIC)</li>
             <li>Federal Reserve System (FRS)</li>
@@ -108,55 +125,22 @@ const ComplianceLanding: React.FC = () => {
         </div>
       </section>
 
-      {/*<section id="pricing" className="bg-secondary py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Simple, Transparent Pricing
-          </h2>
-          <div className="max-w-sm mx-auto bg-card rounded-lg shadow-lg overflow-hidden">
-            <div className="px-6 py-8">
-              <h3 className="text-2xl font-semibold text-center mb-4">
-                Pro Plan
-              </h3>
-              <div className="text-center mb-6">
-                <span className="text-4xl font-bold">$299</span>
-                <span className="text-muted-foreground">/month</span>
-              </div>
-              <ul className="mb-8">
-                <li className="flex items-center mb-3">
-                  <ArrowRight size={20} className="text-primary mr-2" />
-                  <span>Full regulatory database access</span>
-                </li>
-                <li className="flex items-center mb-3">
-                  <ArrowRight size={20} className="text-primary mr-2" />
-                  <span>Automated compliance checks</span>
-                </li>
-                <li className="flex items-center mb-3">
-                  <ArrowRight size={20} className="text-primary mr-2" />
-                  <span>AI summarization and chat</span>
-                </li>
-              </ul>
-              <button className="w-full bg-primary text-primary-foreground px-4 py-2 rounded-full font-semibold hover:bg-primary/90 transition duration-300">
-                Start Free Trial
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>*/}
-
+      {/* Contact section */}
       <section
         id="contact"
-        className="container mx-auto px-4 py-16 text-center bg-secondary"
+        className="container mx-auto px-4 py-10 text-center bg-secondary rounded-lg"
       >
         <h2 className="text-3xl font-bold mb-8">
           Ready to Simplify Your Regulatory Change Process?
         </h2>
-        <p className="text-xl text-muted-foreground mb-8">
+        <p className="text-xl mb-8">
           Get in touch with our team of experts today and see how Regulation 365
           can help your financial service business stay compliant.
         </p>
-        <button className="bg-lime-400 text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-lime-400/50 transition duration-300">
-          Coming Soon
+        <button className="bg-lime-500 hover:bg-lime-600 px-6 py-3 rounded-full text-lg font-semibold transition duration-300">
+          <Link href="https://regulation-365.ghost.io/#/portal/signup">
+            Subscribe for News and Product Updates
+          </Link>
         </button>
       </section>
     </div>
