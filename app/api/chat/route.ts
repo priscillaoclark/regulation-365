@@ -40,7 +40,7 @@ export async function POST(req: Request) {
   // Generate a chatbot response based on the Pinecone results
   console.log("Results passed to chat model:", results);
   const chatResponse = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-4o",
     messages: [
       { role: "user", content: message },
       {
