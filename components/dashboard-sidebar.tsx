@@ -13,6 +13,7 @@ export default function DashboardSidebar() {
   const menuItems = [
     { name: "Overview", href: "/dashboard/overview" },
     { name: "Profile", href: "/dashboard/profile" },
+    { name: "Chat", href: "/dashboard/chat" },
   ];
 
   return (
