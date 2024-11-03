@@ -23,7 +23,7 @@ interface DocumentRecord {
   objectId: string;
   topics: string;
   files: string;
-  relevant: string;
+  relevant: boolean;
   summary: string;
   keywords: string;
 }
@@ -34,6 +34,7 @@ interface FilterValues {
   dateFrom: string;
   dateTo: string;
   searchText: string;
+  showRelevantOnly: boolean;
 }
 
 const DocumentClient: React.FC = () => {
@@ -49,6 +50,7 @@ const DocumentClient: React.FC = () => {
     dateFrom: "",
     dateTo: "",
     searchText: "",
+    showRelevantOnly: false,
   });
   const itemsPerPage = 20;
 
@@ -71,6 +73,33 @@ const DocumentClient: React.FC = () => {
 
     fetchData();
   }, []);
+
+  const handleRelevantToggle = async (docId: string, isRelevant: boolean) => {
+    try {
+      // Update in the backend
+      const response = await fetch(`/api/details/${docId}/relevant`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ relevant: isRelevant }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update relevant status");
+      }
+
+      // Update local state
+      const updatedData = data.map((doc) =>
+        doc.doc_id === docId ? { ...doc, relevant: isRelevant } : doc
+      );
+      setData(updatedData);
+      handleFilterChange({ ...filters }); // Reapply filters with updated data
+    } catch (error) {
+      console.error("Error updating relevant status:", error);
+      // Optionally show error to user
+    }
+  };
 
   const handleFilterChange = (newFilters: FilterValues): void => {
     setFilters(newFilters);
@@ -110,6 +139,10 @@ const DocumentClient: React.FC = () => {
           titleMatch || topicsMatch || keywordsMatch || summaryMatch || docMatch
         );
       });
+    }
+
+    if (newFilters.showRelevantOnly) {
+      filtered = filtered.filter((doc) => doc.relevant);
     }
 
     setFilteredData(filtered);
@@ -264,6 +297,9 @@ const DocumentClient: React.FC = () => {
           <thead className="bg-lime-400 dark:bg-lime-400">
             <tr>
               <th className="px-6 py-2 text-left text-xs font-bold text-center uppercase tracking-wider">
+                Relevant
+              </th>
+              <th className="px-6 py-2 text-left text-xs font-bold text-center uppercase tracking-wider">
                 Document ID
               </th>
               <th className="px-6 py-2 text-left text-xs font-bold text-center uppercase tracking-wider">
@@ -280,26 +316,48 @@ const DocumentClient: React.FC = () => {
           <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
             {currentData.map((record) => (
               <React.Fragment key={record.doc_id}>
-                <tr
-                  className="hover:bg-gray-50 dark:hover:bg-neutral-700 cursor-pointer"
-                  onClick={() => toggleRowExpansion(record.doc_id)}
-                >
-                  <td className="px-6 py-4 whitespace-normal">
+                <tr className="hover:bg-gray-50 dark:hover:bg-neutral-700">
+                  <td
+                    className="px-6 py-4 whitespace-nowrap"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={record.relevant}
+                      onChange={(e) =>
+                        handleRelevantToggle(record.doc_id, e.target.checked)
+                      }
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                    />
+                  </td>
+                  <td
+                    className="px-6 py-4 whitespace-normal"
+                    onClick={() => toggleRowExpansion(record.doc_id)}
+                  >
                     <div className="text-sm text-gray-900 dark:text-white">
                       {record.doc_id}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-normal">
+                  <td
+                    className="px-6 py-4 whitespace-normal"
+                    onClick={() => toggleRowExpansion(record.doc_id)}
+                  >
                     <div className="text-sm text-gray-900 dark:text-white">
                       {record.title}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td
+                    className="px-6 py-4 whitespace-nowrap"
+                    onClick={() => toggleRowExpansion(record.doc_id)}
+                  >
                     <div className="text-sm text-gray-900 dark:text-white">
                       {record.documentType}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td
+                    className="px-6 py-4 whitespace-nowrap"
+                    onClick={() => toggleRowExpansion(record.doc_id)}
+                  >
                     <div className="text-sm text-gray-900 dark:text-white">
                       {formatDate(record.postedDate)}
                     </div>

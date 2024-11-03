@@ -6,6 +6,7 @@ interface FilterValues {
   dateFrom: string;
   dateTo: string;
   searchText: string;
+  showRelevantOnly: boolean;
 }
 
 interface DocumentRecord {
@@ -25,7 +26,7 @@ interface DocumentRecord {
   objectId: string;
   topics: string;
   files: string;
-  relevant: string;
+  relevant: boolean;
   summary: string;
   keywords: string;
 }
@@ -47,6 +48,7 @@ const DocumentFilters: React.FC<DocumentFiltersProps> = ({
     dateFrom: "",
     dateTo: "",
     searchText: "",
+    showRelevantOnly: false,
   });
 
   React.useEffect(() => {
@@ -63,8 +65,10 @@ const DocumentFilters: React.FC<DocumentFiltersProps> = ({
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
   ) => {
-    const { name, value } = e.target;
-    const newFilters = { ...filters, [name]: value };
+    const { name, value, type } = e.target;
+    const newValue =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+    const newFilters = { ...filters, [name]: newValue };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
@@ -76,6 +80,7 @@ const DocumentFilters: React.FC<DocumentFiltersProps> = ({
       dateFrom: "",
       dateTo: "",
       searchText: "",
+      showRelevantOnly: false,
     };
     setFilters(clearedFilters);
     onFilterChange(clearedFilters);
@@ -83,7 +88,8 @@ const DocumentFilters: React.FC<DocumentFiltersProps> = ({
 
   return (
     <div className="mb-6 p-4 bg-white dark:bg-neutral-800 rounded-lg shadow-md">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {/* Existing filter fields */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Document Type
@@ -146,6 +152,20 @@ const DocumentFilters: React.FC<DocumentFiltersProps> = ({
             onChange={handleFilterChange}
             className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-white"
           />
+        </div>
+
+        {/* New Relevant Only checkbox */}
+        <div className="space-y-2 flex items-center">
+          <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <input
+              type="checkbox"
+              name="showRelevantOnly"
+              checked={filters.showRelevantOnly}
+              onChange={handleFilterChange}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+            />
+            <span>Show Relevant Only</span>
+          </label>
         </div>
       </div>
 

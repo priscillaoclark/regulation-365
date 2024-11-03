@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { useEffect, useState } from "react";
 import { BarChart, Calendar, FileText, Users, Tag } from "lucide-react";
@@ -13,6 +14,7 @@ interface DocumentRecord {
   commentStartDate: string;
   commentEndDate: string;
   topics: string;
+  relevant: boolean;
 }
 
 interface AgencyCount {
@@ -31,7 +33,7 @@ export default function OverviewPage() {
   const [error, setError] = useState<string | null>(null);
   const [metrics, setMetrics] = useState({
     totalDocuments: 0,
-    openForComment: 0,
+    relevantDocuments: 0,
     uniqueAgencies: 0,
     recentDocuments: 0,
   });
@@ -64,10 +66,8 @@ export default function OverviewPage() {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
 
-    // Count documents open for comment
-    const openComments = documents.filter(
-      (doc) => doc.openForComment === "true"
-    ).length;
+    // Count relevant documents
+    const relevantDocs = documents.filter((doc) => doc.relevant).length;
 
     // Count unique agencies
     const uniqueAgencies = new Set(documents.map((doc) => doc.agencyId)).size;
@@ -160,7 +160,7 @@ export default function OverviewPage() {
 
     setMetrics({
       totalDocuments: documents.length,
-      openForComment: openComments,
+      relevantDocuments: relevantDocs,
       uniqueAgencies,
       recentDocuments: recent,
     });
@@ -209,9 +209,9 @@ export default function OverviewPage() {
           </div>
           <div className="p-6 bg-lime-400 rounded-lg shadow flex items-center justify-between">
             <div>
-              <p className="text-sm opacity-80">Open for Comment</p>
+              <p className="text-sm opacity-80">Relevant Documents</p>
               <p className="text-2xl font-bold">
-                {metrics.openForComment.toLocaleString()}
+                {metrics.relevantDocuments.toLocaleString()}
               </p>
             </div>
             <BarChart size={32} className="opacity-80" />
