@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { User } from "@supabase/auth-js";
-import { Clock, Mail, Calendar, Shield } from "lucide-react";
+import { Clock, Mail, Calendar, Shield, CircleUserRound } from "lucide-react";
 
 interface Identity {
   identity_id: string;
@@ -49,7 +49,7 @@ export default async function ProfilePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <section className="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-md space-y-4">
           <h3 className="text-2xl font-semibold dark:text-white flex items-center gap-2">
-            <Shield className="h-6 w-6 text-lime-500" />
+            <CircleUserRound className="h-6 w-6 text-lime-500" />
             Account Information
           </h3>
 

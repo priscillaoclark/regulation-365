@@ -80,7 +80,7 @@ const FileDisplay: React.FC<FileDisplayProps> = ({ filesJson }) => {
 
   return (
     <div className="mt-2">
-      <h4 className="font-medium mb-2">Files:</h4>
+      <h4 className="font-bold mb-2">Files:</h4>
       {renderFiles()}
     </div>
   );

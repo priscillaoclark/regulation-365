@@ -26,6 +26,8 @@ interface DocumentRecord {
   topics: string;
   files: string;
   relevant: string;
+  summary: string;
+  keywords: string;
 }
 
 interface DocumentFiltersProps {

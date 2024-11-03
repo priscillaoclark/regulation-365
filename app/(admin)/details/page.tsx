@@ -24,6 +24,8 @@ interface DocumentRecord {
   topics: string;
   files: string;
   relevant: string;
+  summary: string;
+  keywords: string;
 }
 
 interface FilterValues {
@@ -101,7 +103,12 @@ const DocumentClient: React.FC = () => {
       filtered = filtered.filter((doc) => {
         const titleMatch = doc.title?.toLowerCase().includes(searchLower);
         const topicsMatch = doc.topics?.toLowerCase().includes(searchLower);
-        return titleMatch || topicsMatch;
+        const keywordsMatch = doc.keywords?.toLowerCase().includes(searchLower);
+        const summaryMatch = doc.summary?.toLowerCase().includes(searchLower);
+        const docMatch = doc.doc_id?.toLowerCase().includes(searchLower);
+        return (
+          titleMatch || topicsMatch || keywordsMatch || summaryMatch || docMatch
+        );
       });
     }
 
@@ -234,7 +241,7 @@ const DocumentClient: React.FC = () => {
           </div>
           <input
             type="text"
-            placeholder="Search in titles and topics..."
+            placeholder="Search in document ID, titles, keywords, and summaries"
             value={filters.searchText}
             onChange={handleSearchChange}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-neutral-800 dark:border-neutral-600 dark:text-white dark:placeholder-gray-400"
@@ -268,9 +275,6 @@ const DocumentClient: React.FC = () => {
               <th className="px-6 py-2 text-left text-xs font-bold text-center uppercase tracking-wider">
                 Posted Date
               </th>
-              <th className="px-6 py-2 text-left text-xs font-bold text-center uppercase tracking-wider">
-                Agency ID
-              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
@@ -300,34 +304,29 @@ const DocumentClient: React.FC = () => {
                       {formatDate(record.postedDate)}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {record.agencyId}
-                    </div>
-                  </td>
                 </tr>
                 {expandedRow === record.doc_id && (
                   <tr className="bg-gray-50 dark:bg-neutral-700">
                     <td colSpan={5} className="px-6 py-4">
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="font-medium">
+                          <p className="pt-3 font-bold">
                             Document ID:{" "}
                             <span className="font-normal">{record.doc_id}</span>
                           </p>
-                          <p className="font-medium">
+                          <p className="pt-3 font-bold">
                             FR Document Number:{" "}
                             <span className="font-normal">
                               {record.frDocNum}
                             </span>
                           </p>
-                          <p className="font-medium">
+                          <p className="pt-3 font-bold">
                             Docket ID:{" "}
                             <span className="font-normal">
                               {record.docketId}
                             </span>
                           </p>
-                          <p className="font-medium">
+                          <p className="pt-3 font-bold">
                             Comment Period:{" "}
                             <span className="font-normal">
                               {formatDate(record.commentStartDate)} -{" "}
@@ -341,11 +340,27 @@ const DocumentClient: React.FC = () => {
                           )}
                         </div>
                         <div>
-                          <p className="font-medium">Topics:</p>
+                          <p className="pt-3 font-bold">Topics:</p>
                           <div className="mt-1">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                               {record.topics || "No topics listed"}
                             </ReactMarkdown>
+                          </div>
+                          <div>
+                            <p className="pt-3 font-bold">AI Keywords:</p>
+                            <div className="mt-1">
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {record.keywords || "No keywords available"}
+                              </ReactMarkdown>
+                            </div>
+                          </div>
+                          <div>
+                            <p className="pt-3 font-bold">AI Summary:</p>
+                            <div className="mt-1">
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {record.summary || "No summary available"}
+                              </ReactMarkdown>
+                            </div>
                           </div>
                         </div>
                       </div>
