@@ -24,7 +24,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Check if any child component has the "full-width-section" class
   const hasFullWidth = React.Children.toArray(children).some(
     (child: any) => child.props?.className === "full-width-section"
   );
@@ -38,10 +37,10 @@ export default function RootLayout({
         disableTransitionOnChange
       >
         <main className="min-h-screen flex flex-col items-center">
+          <Header />
           <div
-            className={`flex-1 w-full flex flex-col gap-20 ${hasFullWidth ? "" : ""} items-center`}
+            className={`flex-1 w-full flex flex-col gap-20 ${hasFullWidth ? "" : ""} items-center pt-16`}
           >
-            <Header />
             <div className="flex flex-col gap-20 w-full">
               {children}
               <SpeedInsights />

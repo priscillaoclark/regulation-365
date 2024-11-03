@@ -1,101 +1,213 @@
 import Parser from "rss-parser";
-import RSSFeed from "@/components/rss"; // Import the RSSFeed component
+import { notFound } from "next/navigation";
+import RSSFeed from "@/components/rss";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
-// Define the structure of the RSS items
 interface FeedItem {
   title: string;
   link: string;
   pubDate: string;
   contentSnippet: string;
-  source: string; // Add the source property
+  source: string;
+  guid?: string;
+  categories?: string[];
 }
 
 interface Feed {
   title: string;
   items: FeedItem[];
+  lastBuildDate?: string;
+  description?: string;
 }
 
-// Server-side fetching happens here in the Server Component
-async function fetchFeeds(): Promise<Feed[]> {
-  const parser = new Parser();
-  const urls = [
-    "https://www.globalfinregblog.com/feed/",
-    "https://www.morganlewis.com/rss/blogs?category=finreg&amp;top=15",
-    "https://www.gtlaw-financialservicesobserver.com/feed/",
-    "https://mco.mycomplianceoffice.com/blog/rss.xml",
-    "https://www.globalcompliancenews.com/feed/",
-    "https://www.consumerfinance.gov/about-us/newsroom/feed/",
-    "https://public.govdelivery.com/topics/USFDIC_26/feed.rss",
-    "https://www.federalreserve.gov/feeds/press_all.xml",
-    "https://www.sec.gov/news/pressreleases.rss",
-  ];
+// Configuration object for RSS feeds
+const RSS_FEEDS = [
+  {
+    url: "https://www.globalfinregblog.com/feed/",
+    name: "Global Financial Regulatory Blog",
+    category: "Legal",
+  },
+  {
+    url: "https://www.morganlewis.com/rss/blogs?category=finreg&amp;top=15",
+    name: "Morgan Lewis FinReg",
+    category: "Legal",
+  },
+  {
+    url: "https://www.gtlaw-financialservicesobserver.com/feed/",
+    name: "GT Financial Services Observer",
+    category: "Legal",
+  },
+  {
+    url: "https://mco.mycomplianceoffice.com/blog/rss.xml",
+    name: "MCO Compliance",
+    category: "Professional Services",
+  },
+  {
+    url: "https://www.globalcompliancenews.com/feed/",
+    name: "Global Compliance News",
+    category: "Professional Services",
+  },
+  {
+    url: "https://www.consumerfinance.gov/about-us/newsroom/feed/",
+    name: "CFPB Newsroom",
+    category: "Regulator",
+  },
+  {
+    url: "https://public.govdelivery.com/topics/USFDIC_26/feed.rss",
+    name: "FDIC Updates",
+    category: "Regulator",
+  },
+  {
+    url: "https://www.federalreserve.gov/feeds/press_all.xml",
+    name: "Federal Reserve Press Releases",
+    category: "Regulator",
+  },
+  {
+    url: "https://www.sec.gov/news/pressreleases.rss",
+    name: "SEC Press Releases",
+    category: "Regulator",
+  },
+] as const;
 
-  const feeds = await Promise.all(
-    urls.map(async (url) => {
-      const feed = await parser.parseURL(url);
-      return {
-        title: feed.title || "No Title",
-        items: feed.items.map((item) => ({
-          title: item.title || "No Title",
-          link: item.link || "#",
-          pubDate: item.pubDate || "Unknown Date",
-          contentSnippet: item.contentSnippet || "No Description",
+// Blacklist of titles to filter out
+const BLACKLISTED_TITLES = [
+  "Action Required: Confirm Your WSJ Newsletter",
+  "Action Required: Set a password",
+  // Add more blacklisted titles as needed
+];
+
+async function fetchFeed(
+  feedConfig: (typeof RSS_FEEDS)[number]
+): Promise<Feed | null> {
+  try {
+    const parser = new Parser({
+      timeout: 5000, // 5 second timeout
+      maxRedirects: 3,
+      headers: {
+        "User-Agent": "Regulation365/1.0 (https://regulation365.com)",
+      },
+    });
+
+    const feed = await parser.parseURL(feedConfig.url);
+
+    return {
+      title: feed.title || feedConfig.name,
+      description: feed.description,
+      lastBuildDate: feed.lastBuildDate,
+      items: feed.items
+        .filter((item) => item.title && item.link) // Ensure required fields exist
+        .map((item) => ({
+          title: item.title!,
+          link: item.link!,
+          pubDate: item.pubDate || new Date().toISOString(),
+          contentSnippet: item.contentSnippet || "No description available",
+          source: feedConfig.name,
+          guid: item.guid,
+          categories: item.categories,
         })),
-      };
-    })
-  );
-
-  // Combine all feed items into a single array with source title
-  const allItems = feeds.flatMap((feed) =>
-    feed.items.map((item) => ({
-      ...item,
-      source: feed.title,
-    }))
-  );
-
-  // Sort the combined items by publication date in descending order
-  allItems.sort(
-    (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
-  );
-
-  // Remove items older than 1 month
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  const recentItems = allItems.filter(
-    (item) => new Date(item.pubDate) > oneMonthAgo
-  );
-
-  // Filter out specific titles
-  const filteredItems = recentItems.filter(
-    (item) =>
-      !item.title.includes("Action Required: Confirm Your WSJ Newsletter") &&
-      !item.title.includes("Action Required: Set a password")
-  );
-
-  // Return filtered and sorted items
-  return [
-    {
-      title: "Combined Feed",
-      items: filteredItems,
-    },
-  ];
+    };
+  } catch (error) {
+    console.error(`Error fetching ${feedConfig.name}:`, error);
+    return null;
+  }
 }
 
-export default async function Home() {
-  const feeds = await fetchFeeds(); // Fetch feeds on the server
+async function fetchFeeds(): Promise<Feed[]> {
+  // Fetch all feeds in parallel
+  const feedPromises = RSS_FEEDS.map((feedConfig) => fetchFeed(feedConfig));
+  const feeds = await Promise.allSettled(feedPromises);
+
+  // Collect successful feeds
+  const successfulFeeds = feeds
+    .filter(
+      (result): result is PromiseFulfilledResult<Feed | null> =>
+        result.status === "fulfilled" && result.value !== null
+    )
+    .map((result) => result.value!);
+
+  // Combine and process all items
+  const allItems = successfulFeeds.flatMap((feed) => feed.items);
+
+  // Filter and sort items
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 2);
+
+  const processedItems = allItems
+    .filter((item) => {
+      const pubDate = new Date(item.pubDate);
+      return (
+        pubDate > oneMonthAgo &&
+        !BLACKLISTED_TITLES.some((title) => item.title.includes(title))
+      );
+    })
+    .sort(
+      (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
+    );
+
+  if (processedItems.length === 0) {
+    throw new Error("No recent items found in any feeds");
+  }
+
+  // Group items by category
+  const itemsByCategory = RSS_FEEDS.reduce(
+    (acc, feed) => {
+      if (!acc[feed.category]) {
+        acc[feed.category] = [];
+      }
+      const categoryItems = processedItems.filter(
+        (item) => item.source === feed.name
+      );
+      acc[feed.category].push(...categoryItems);
+      return acc;
+    },
+    {} as Record<string, FeedItem[]>
+  );
+
+  return Object.entries(itemsByCategory).map(([category, items]) => ({
+    title: category,
+    items: items,
+  }));
+}
+
+export const revalidate = 3600; // Revalidate every hour
+
+export default async function NewsPage() {
+  let feeds: Feed[] = [];
+  let error: Error | null = null;
+
+  try {
+    feeds = await fetchFeeds();
+  } catch (e) {
+    error = e instanceof Error ? e : new Error("Failed to fetch feeds");
+    if (feeds.length === 0) {
+      notFound();
+    }
+  }
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-6 p-4 mt-16 md:gap-12 md:p-8 max-w-full mx-auto">
-      <div className="w-full">
-        <h1 className="text-4xl font-bold mb-6">Regulatory News</h1>
-        <p>
-          Current topics aggregated from regulators and trustworthy
-          legal/professional services firms.
-        </p>
-        <hr className="w-full border-t-2 border-gray-300 mt-6 mb-6" />
-        {/* Pass the fetched RSS feeds as props to the RSSFeed component */}
-        <RSSFeed feeds={feeds} />
-      </div>
+    <div className="flex-1 w-full flex flex-col gap-6 p-4 md:gap-12 md:p-8 max-w-7xl mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-4xl">Regulatory News</CardTitle>
+          <p className="text-muted-foreground mt-2">
+            Current topics aggregated from regulators and trustworthy
+            legal/professional services firms.
+          </p>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                Some feeds may be unavailable: {error.message}
+              </AlertDescription>
+            </Alert>
+          )}
+          <RSSFeed feeds={feeds} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

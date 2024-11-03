@@ -1,16 +1,19 @@
-// components/RSSFeed.tsx
-"use client"; // Mark this component as a Client Component
+"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-// Define the structure of the RSS items
 type FeedItem = {
   title: string;
   link: string;
   pubDate: string;
   contentSnippet: string;
   source: string;
+  sourceTitle?: string;
+  dateObj?: Date;
 };
 
 type Feed = {
@@ -18,105 +21,266 @@ type Feed = {
   items: FeedItem[];
 };
 
-// Component Props
 interface RSSFeedProps {
   feeds: Feed[];
 }
 
-// RSSFeed component to display the feeds
+interface PaginationControlsProps {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  startIndex: number;
+  endIndex: number;
+  onPageChange: (page: number) => void;
+}
+
+const ITEMS_PER_PAGE = 10;
+
+// Source mapping configuration
+const SOURCE_MAPPING = {
+  MORGAN_LEWIS: {
+    url: "morganlewis",
+    name: "All Things FinReg (Morgan Lewis)",
+  },
+  LATHAM: {
+    url: "globalfinregblog",
+    name: "Global Financial Regulatory Blog (Latham & Watkins LLP)",
+  },
+  GREENBERG: {
+    url: "gtlaw-financialservicesobserver",
+    name: "Financial Services Observer (Greenberg Traurig)",
+  },
+  MCO: {
+    url: "mycomplianceoffice",
+    name: "MyComplianceOffice Blog",
+  },
+  BAKER: {
+    url: "globalcompliancenews",
+    name: "Global Compliance News (Baker McKenzie)",
+  },
+  DELOITTE: {
+    url: "wwqqjxqkqqvdy67ypt4s",
+    name: "Risk & Compliance Journal (Deloitte / WSJ)",
+  },
+  CFPB: {
+    url: "consumerfinance.gov",
+    name: "Consumer Financial Protection Bureau (CFPB)",
+  },
+  FDIC: {
+    url: "USFDIC",
+    name: "Federal Deposit Insurance Corporation (FDIC)",
+  },
+  FRB: {
+    url: "federalreserve",
+    name: "Federal Reserve Board (FRB)",
+  },
+  OCC: {
+    url: "occ.gov",
+    name: "Office of the Comptroller of the Currency (OCC)",
+  },
+  SEC: {
+    url: "sec.gov",
+    name: "Securities and Exchange Commission (SEC)",
+  },
+} as const;
+
+// Function to get source name from link
+const getSourceFromLink = (link: string): string => {
+  const sourceEntry = Object.values(SOURCE_MAPPING).find((source) =>
+    link.toLowerCase().includes(source.url.toLowerCase())
+  );
+  return sourceEntry?.name || "Unknown Source";
+};
+
+// Format date for display
+const formatDate = (dateString: string): string => {
+  try {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Invalid date:", dateString);
+    return "Invalid Date";
+  }
+};
+
+const PaginationControls: React.FC<PaginationControlsProps> = ({
+  currentPage,
+  totalPages,
+  totalItems,
+  startIndex,
+  endIndex,
+  onPageChange,
+}) => {
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 px-2">
+      <div className="text-sm text-muted-foreground order-2 sm:order-1">
+        Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
+        {totalItems} items
+      </div>
+
+      <div className="flex items-center gap-2 order-1 sm:order-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          Previous
+        </Button>
+
+        <div className="hidden sm:flex items-center gap-2 mx-4">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+            if (
+              page === 1 ||
+              page === totalPages ||
+              (page >= currentPage - 1 && page <= currentPage + 1)
+            ) {
+              return (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onPageChange(page)}
+                  className={
+                    currentPage === page ? "bg-lime-500 hover:bg-lime-600" : ""
+                  }
+                >
+                  {page}
+                </Button>
+              );
+            } else if (page === currentPage - 2 || page === currentPage + 2) {
+              return (
+                <span key={page} className="px-2">
+                  ...
+                </span>
+              );
+            }
+            return null;
+          })}
+        </div>
+
+        <div className="sm:hidden flex items-center gap-2 mx-2">
+          <span className="text-sm text-muted-foreground">
+            Page {currentPage} of {totalPages}
+          </span>
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+          <ChevronRight className="h-4 w-4 ml-1" />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const RSSFeed: React.FC<RSSFeedProps> = ({ feeds }) => {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
+  // Process and sort all items
+  const sortedItems = useMemo(() => {
+    const items = feeds.flatMap((feed) =>
+      feed.items.map((item) => ({
+        ...item,
+        sourceTitle: feed.title,
+        dateObj: new Date(item.pubDate),
+      }))
+    );
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+    // Filter out invalid dates and sort
+    return items
+      .filter((item) => !isNaN(item.dateObj!.getTime()))
+      .sort((a, b) => b.dateObj!.getTime() - a.dateObj!.getTime());
+  }, [feeds]);
+
+  const totalPages = Math.ceil(sortedItems.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = sortedItems.slice(startIndex, endIndex);
+
+  const goToPage = (page: number) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setCurrentPage(page);
   };
 
   if (feeds.length === 0) {
-    return <p>No RSS feeds available at the moment.</p>;
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No RSS feeds available at the moment.
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full p-4 bg-neutral-100 dark:bg-neutral-900">
-      <div className="w-full h-full">
-        {feeds.map((feed, index) => (
-          <div key={index} className="mb-8">
-            {feed.items.map((item, i) => (
-              <div
-                key={i}
-                className="bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 shadow-md rounded-lg p-6 mb-4"
+    <div className="space-y-6">
+      {/* Top Pagination */}
+      <Card>
+        <CardContent>
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={sortedItems.length}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            onPageChange={goToPage}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Items Display */}
+      <div className="space-y-4">
+        {currentItems.map((item, index) => (
+          <Card key={`${item.link}-${index}`} className="overflow-hidden">
+            <CardContent className="p-6">
+              <Link
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block"
+                aria-label={`Read more about ${item.title}`}
               >
-                <Link
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-blue-700"
-                  aria-label={`Read more about ${item.title}`}
-                >
-                  <h3 className="text-2xl font-semibold mb-2 text-lime-500 hover:underline">
-                    {item.title}
-                  </h3>
-                </Link>
-                <p className="text-sm text-gray-500 mb-2">
-                  {new Date(item.pubDate).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-                <p className="text-sm text-gray-500 mb-2">
-                  {" "}
-                  Source:{" "}
-                  {feed.title === "Blogs" || item.link.includes("morganlewis")
-                    ? "All Things FinReg (Morgan Lewis)"
-                    : feed.title === "Global Financial Regulatory Blog" ||
-                        item.link.includes("globalfinregblog")
-                      ? "Global Financial Regulatory Blog (Latham & Watkins LLP)"
-                      : feed.title === "Financial Services Observer" ||
-                          item.link.includes("gtlaw-financialservicesobserver")
-                        ? "Financial Services Observer (Greenberg Traurig)"
-                        : feed.title === "MyComplianceOffice Blog" ||
-                            item.link.includes("mycomplianceoffice")
-                          ? "MyComplianceOffice Blog"
-                          : feed.title === "Global Compliance News" ||
-                              item.link.includes("globalcompliancenews")
-                            ? "Global Compliance News (Baker McKenzie)"
-                            : item.link.includes("wwqqjxqkqqvdy67ypt4s")
-                              ? "Risk & Compliance Journal (Deloitte / WSJ)"
-                              : item.link.includes("consumerfinance.gov")
-                                ? "Consumer Financial Protection Bureau (CFPB)"
-                                : item.link.includes("USFDIC")
-                                  ? "Federal Deposit Insurance Corporation (FDIC)"
-                                  : item.link.includes("federalreserve")
-                                    ? "Federal Reserve Board (FRB)"
-                                    : item.link.includes("occ.gov")
-                                      ? "Office of the Comptroller of the Currency (OCC)"
-                                      : item.link.includes("sec.gov")
-                                        ? "Securities and Exchange Commission (SEC)"
-                                        : "N/A"}
-                </p>
-                <p className="leading-relaxed mb-4">
-                  {item.contentSnippet.replace(/... Continue Reading/g, "... ")}
-                </p>
+                <h3 className="text-2xl font-semibold mb-2 text-lime-500 group-hover:text-lime-600 group-hover:underline transition-colors">
+                  {item.title}
+                </h3>
+              </Link>
+
+              <div className="flex flex-col space-y-2 mb-4 text-sm text-muted-foreground">
+                <time dateTime={item.pubDate}>{formatDate(item.pubDate)}</time>
+                <div>Source: {getSourceFromLink(item.link)}</div>
               </div>
-            ))}
-          </div>
+
+              <p className="leading-relaxed text-muted-foreground">
+                {item.contentSnippet.replace(/... Continue Reading/g, "... ")}
+              </p>
+            </CardContent>
+          </Card>
         ))}
       </div>
+
+      {/* Bottom Pagination */}
+      <Card>
+        <CardContent>
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={sortedItems.length}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            onPageChange={goToPage}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
