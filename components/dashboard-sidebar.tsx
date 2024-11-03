@@ -5,15 +5,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import AppLogo from "@/components/logo";
+import Image from "next/image";
+import { Button } from "./ui/button";
+import { signOutAction } from "@/app/actions";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { name: "Overview", href: "/dashboard/overview" },
-    { name: "Profile", href: "/dashboard/profile" },
-    { name: "Chat", href: "/dashboard/chat" },
+    { name: "Dashboard", href: "/dashboard" },
+    { name: "Details", href: "/details" },
+    { name: "Chat", href: "/chat" },
+    { name: "Profile", href: "/profile" },
   ];
 
   return (
@@ -31,6 +37,14 @@ export default function DashboardSidebar() {
       </button>
 
       <nav className="flex flex-col p-6 space-y-4">
+        <div className="mt-auto mx-auto p-6">
+          <Image
+            src="/logo/white-logo.svg"
+            alt="dark-mode-logo"
+            width={60}
+            height={60}
+          />
+        </div>
         {menuItems.map((item) => (
           <Link key={item.name} href={item.href}>
             <span
@@ -44,6 +58,18 @@ export default function DashboardSidebar() {
             </span>
           </Link>
         ))}
+
+        <div className="flex justify-center mt-4">
+          <ThemeSwitcher />
+          <form action={signOutAction}>
+            <Button
+              type="submit"
+              className="block py-2 px-4 rounded-lg text-center bg-neutral-800 text-gray-300 hover:bg-lime-500 hover:text-white"
+            >
+              Sign out
+            </Button>
+          </form>
+        </div>
       </nav>
     </div>
   );
