@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FileDisplay from "../FileDisplay";
 import Link from "next/link";
+import { DocumentChat } from "../DocumentChat";
 
 interface DocumentRecord {
   doc_id: string;
@@ -45,10 +45,8 @@ export default function DocumentDetailPage() {
         setLoading(true);
         const response = await fetch("/api/details");
         const data = await response.json();
-
         const ids = data.map((doc: DocumentRecord) => doc.doc_id);
         setAllDocIds(ids);
-
         const currentDoc = data.find(
           (doc: DocumentRecord) => doc.doc_id === params.docId
         );
@@ -59,37 +57,31 @@ export default function DocumentDetailPage() {
         setLoading(false);
       }
     };
-
     fetchDocument();
   }, [params.docId]);
 
   const handleNavigation = (direction: "prev" | "next") => {
     const currentIndex = allDocIds.indexOf(params.docId as string);
-    let newIndex;
-
-    if (direction === "prev") {
-      newIndex = currentIndex > 0 ? currentIndex - 1 : allDocIds.length - 1;
-    } else {
-      newIndex = currentIndex < allDocIds.length - 1 ? currentIndex + 1 : 0;
-    }
-
+    let newIndex =
+      direction === "prev"
+        ? currentIndex > 0
+          ? currentIndex - 1
+          : allDocIds.length - 1
+        : currentIndex < allDocIds.length - 1
+          ? currentIndex + 1
+          : 0;
     router.push(`/details/${allDocIds[newIndex]}`);
   };
 
   const handleRelevantToggle = async () => {
     if (!document) return;
-
     try {
       const response = await fetch(`/api/details/${document.doc_id}/relevant`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ relevant: !document.relevant }),
       });
-
       if (!response.ok) throw new Error("Failed to update relevant status");
-
       setDocument({ ...document, relevant: !document.relevant });
     } catch (error) {
       console.error("Error updating relevant status:", error);
@@ -150,37 +142,52 @@ export default function DocumentDetailPage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6 overflow-y-auto bg-gray-50 dark:bg-neutral-900">
-        <div className="max-w-6xl mx-auto space-y-6">
-          {/* Document Header Card */}
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div className="space-y-2">
-                  <CardTitle className="text-2xl font-bold dark:text-white">
-                    {document.title}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Document #{document.doc_id}
-                  </p>
+      {/* Main Content - Two Column Layout */}
+      <div className="flex-1 p-6 overflow-hidden bg-gray-50 dark:bg-neutral-900">
+        <div className="h-full flex gap-6">
+          {/* Left Column - Main Info */}
+          <div className="w-1/2 space-y-6 overflow-y-auto pr-3">
+            {/* Document Header Card */}
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold dark:text-white">
+                      {document.title}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Document #{document.doc_id}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Relevant
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={document.relevant}
+                      onChange={handleRelevantToggle}
+                      className="h-4 w-4 text-lime-600 focus:ring-lime-500 border-gray-300 rounded"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Mark as Relevant:
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={document.relevant}
-                    onChange={handleRelevantToggle}
-                    className="h-4 w-4 text-lime-600 focus:ring-lime-500 border-gray-300 rounded"
-                  />
+              </CardHeader>
+              <CardContent>
+                {/* Files Section */}
+                <div className="mb-6 border-b pb-6">
+                  <div className="bg-gray-50 dark:bg-neutral-800 rounded-lg p-4">
+                    {document.files ? (
+                      <FileDisplay filesJson={document.files} />
+                    ) : (
+                      <p className="text-gray-500 dark:text-gray-400">
+                        No files available
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+
+                {/* Document Details */}
+                <div className="grid grid-cols-2 gap-6">
                   <dl className="space-y-4">
                     <div>
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -207,8 +214,6 @@ export default function DocumentDetailPage() {
                       </dd>
                     </div>
                   </dl>
-                </div>
-                <div>
                   <dl className="space-y-4">
                     <div>
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -237,71 +242,65 @@ export default function DocumentDetailPage() {
                     </div>
                   </dl>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Rest of the cards remain the same */}
-          {/* Files Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Associated Files</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {document.files ? (
-                <FileDisplay filesJson={document.files} />
-              ) : (
-                <p className="text-gray-500 dark:text-gray-400">
-                  No files available
-                </p>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Topics and Keywords Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Topics & Keywords</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    Topics
-                  </h4>
-                  <div className="prose dark:prose-invert">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {document.topics || "No topics listed"}
-                    </ReactMarkdown>
+            {/* Topics and Keywords Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Topics & Keywords</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                      Keywords
+                    </h4>
+                    <div className="prose dark:prose-invert">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {document.keywords || "No keywords available"}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                      Topics
+                    </h4>
+                    <div className="prose dark:prose-invert">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {document.topics || "No topics listed"}
+                      </ReactMarkdown>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    Keywords
-                  </h4>
-                  <div className="prose dark:prose-invert">
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Chat & Summary */}
+          <div className="w-1/2 overflow-y-auto pl-3 space-y-6">
+            {/* Chat Card */}
+            <DocumentChat
+              documentId={document.doc_id}
+              documentTitle={document.title}
+            />
+
+            <div className="sticky top-6">
+              {/* AI Summary Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>AI-Generated Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {document.keywords || "No keywords available"}
+                      {document.summary || "No summary available"}
                     </ReactMarkdown>
                   </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Summary Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>AI-Generated Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose dark:prose-invert">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {document.summary || "No summary available"}
-                </ReactMarkdown>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

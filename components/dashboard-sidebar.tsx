@@ -62,8 +62,8 @@ export default function DashboardSidebar() {
       icon: <FileText className="h-4 w-4" />,
     },
     {
-      title: "Chat",
-      href: "/chat",
+      title: "Major Regulations",
+      href: "/reg-chat",
       icon: <MessageSquare className="h-4 w-4" />,
     },
     {
@@ -105,8 +105,8 @@ function SidebarContent() {
       icon: <FileText className="h-4 w-4" />,
     },
     {
-      title: "Chat",
-      href: "/chat",
+      title: "Major Regulations",
+      href: "/reg-chat",
       icon: <MessageSquare className="h-4 w-4" />,
     },
     {

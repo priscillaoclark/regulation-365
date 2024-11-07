@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-const ChatPage = () => {
+const RegChatPage = () => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
     []
@@ -11,7 +11,7 @@ const ChatPage = () => {
     if (!input.trim()) return;
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch("/api/reg-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
@@ -38,7 +38,7 @@ const ChatPage = () => {
       {/* Header */}
       <div className="flex-none p-6 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700">
         <h2 className="text-3xl font-bold dark:text-white">
-          Chat with Documents
+          Chat with Major Historical Financial Regulations
         </h2>
       </div>
 
@@ -105,4 +105,4 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
+export default RegChatPage;
