@@ -1,76 +1,168 @@
-// components/dashboard-sidebar.tsx
-
-"use client";
-
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  LayoutDashboard,
+  FileText,
+  MessageSquare,
+  User,
+  LogOut,
+  Menu,
+} from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import AppLogo from "@/components/logo";
 import Image from "next/image";
-import { Button } from "./ui/button";
 import { signOutAction } from "@/app/actions";
 
-export default function DashboardSidebar() {
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
+  items: {
+    href: string;
+    title: string;
+    icon: React.ReactNode;
+  }[];
+}
 
-  const menuItems = [
-    { name: "Dashboard", href: "/dashboard" },
-    { name: "Details", href: "/details" },
-    { name: "Chat", href: "/chat" },
-    { name: "Profile", href: "/profile" },
+export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
+  const pathname = usePathname();
+
+  return (
+    <nav className={cn("flex flex-col gap-2", className)} {...props}>
+      {items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className={cn(
+            "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
+            pathname === item.href
+              ? "bg-lime-500 text-white"
+              : "text-muted-foreground hover:bg-lime-500/20 hover:text-lime-500"
+          )}
+        >
+          {item.icon}
+          {item.title}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+export default function DashboardSidebar() {
+  const navItems = [
+    {
+      title: "Dashboard",
+      href: "/dashboard",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      title: "Details",
+      href: "/details",
+      icon: <FileText className="h-4 w-4" />,
+    },
+    {
+      title: "Chat",
+      href: "/chat",
+      icon: <MessageSquare className="h-4 w-4" />,
+    },
+    {
+      title: "Profile",
+      href: "/profile",
+      icon: <User className="h-4 w-4" />,
+    },
   ];
 
   return (
-    <div
-      className={`fixed inset-y-0 left-0 transform ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform lg:translate-x-0 lg:w-64 bg-neutral-800 text-white z-40`}
-    >
-      {/* Toggle button for small screens */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden p-4 text-white focus:outline-none"
-      >
-        ☰
-      </button>
+    <>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="ghost" className="lg:hidden fixed left-4 top-4 z-40">
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-64 p-0">
+          <MobileSidebar />
+        </SheetContent>
+      </Sheet>
+      <aside className="fixed hidden lg:flex h-screen w-64 flex-col border-r">
+        <DesktopSidebar />
+      </aside>
+    </>
+  );
+}
 
-      <nav className="flex flex-col p-6 space-y-4">
-        <div className="mt-auto mx-auto p-6">
+function SidebarContent() {
+  const navItems = [
+    {
+      title: "Dashboard",
+      href: "/dashboard",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      title: "Details",
+      href: "/details",
+      icon: <FileText className="h-4 w-4" />,
+    },
+    {
+      title: "Chat",
+      href: "/chat",
+      icon: <MessageSquare className="h-4 w-4" />,
+    },
+    {
+      title: "Profile",
+      href: "/profile",
+      icon: <User className="h-4 w-4" />,
+    },
+  ];
+
+  return (
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex h-14 items-center border-b px-6">
+        <div className="flex items-center gap-2">
+          <Image
+            src="/logo/black-logo.svg"
+            alt="Logo"
+            width={30}
+            height={30}
+            className="dark:hidden"
+          />
           <Image
             src="/logo/white-logo.svg"
-            alt="dark-mode-logo"
-            width={60}
-            height={60}
+            alt="Logo"
+            width={30}
+            height={30}
+            className="hidden dark:block"
           />
+          <span className="text-lg font-semibold">Regulation 365</span>
         </div>
-        {menuItems.map((item) => (
-          <Link key={item.name} href={item.href}>
-            <span
-              className={`block py-2 px-4 rounded-lg text-center ${
-                pathname === item.href
-                  ? "bg-lime-500 text-white"
-                  : "text-gray-300 hover:bg-lime-500 hover:text-white"
-              }`}
-            >
-              {item.name}
-            </span>
-          </Link>
-        ))}
-
-        <div className="flex justify-center mt-4">
+      </div>
+      <ScrollArea className="flex-1 px-3">
+        <SidebarNav items={navItems} />
+      </ScrollArea>
+      <div className="border-t p-4">
+        <div className="flex items-center justify-between gap-2">
           <ThemeSwitcher />
           <form action={signOutAction}>
             <Button
               type="submit"
-              className="block py-2 px-4 rounded-lg text-center bg-neutral-800 text-gray-300 hover:bg-lime-500 hover:text-white"
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
             >
-              Sign out
+              <LogOut className="h-4 w-4" />
             </Button>
           </form>
         </div>
-      </nav>
+      </div>
     </div>
   );
+}
+
+function MobileSidebar() {
+  return <SidebarContent />;
+}
+
+function DesktopSidebar() {
+  return <SidebarContent />;
 }

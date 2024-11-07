@@ -3,6 +3,8 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation"; // correct import for app router
+import Link from "next/link"; // add Link import
 import DocumentFilters from "./DocumentFilters";
 import FileDisplay from "./FileDisplay";
 
@@ -38,6 +40,7 @@ interface FilterValues {
 }
 
 const DocumentClient: React.FC = () => {
+  const router = useRouter();
   const [data, setData] = React.useState<DocumentRecord[]>([]);
   const [filteredData, setFilteredData] = React.useState<DocumentRecord[]>([]);
   const [error, setError] = React.useState<string | null>(null);
@@ -53,6 +56,15 @@ const DocumentClient: React.FC = () => {
     showRelevantOnly: false,
   });
   const itemsPerPage = 20;
+
+  const handleRowClick = (docId: string, e: React.MouseEvent) => {
+    // Prevent navigation when clicking the checkbox
+    const target = e.target as HTMLElement;
+    if (target.tagName === "INPUT" || target.closest("[data-click-stop]")) {
+      return;
+    }
+    router.push(`/details/${docId}`);
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -315,117 +327,45 @@ const DocumentClient: React.FC = () => {
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
             {currentData.map((record) => (
-              <React.Fragment key={record.doc_id}>
-                <tr className="hover:bg-gray-50 dark:hover:bg-neutral-700">
-                  <td
-                    className="px-6 py-4 whitespace-nowrap"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={record.relevant}
-                      onChange={(e) =>
-                        handleRelevantToggle(record.doc_id, e.target.checked)
-                      }
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
-                    />
-                  </td>
-                  <td
-                    className="px-6 py-4 whitespace-normal"
-                    onClick={() => toggleRowExpansion(record.doc_id)}
-                  >
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {record.doc_id}
-                    </div>
-                  </td>
-                  <td
-                    className="px-6 py-4 whitespace-normal"
-                    onClick={() => toggleRowExpansion(record.doc_id)}
-                  >
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {record.title}
-                    </div>
-                  </td>
-                  <td
-                    className="px-6 py-4 whitespace-nowrap"
-                    onClick={() => toggleRowExpansion(record.doc_id)}
-                  >
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {record.documentType}
-                    </div>
-                  </td>
-                  <td
-                    className="px-6 py-4 whitespace-nowrap"
-                    onClick={() => toggleRowExpansion(record.doc_id)}
-                  >
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {formatDate(record.postedDate)}
-                    </div>
-                  </td>
-                </tr>
-                {expandedRow === record.doc_id && (
-                  <tr className="bg-gray-50 dark:bg-neutral-700">
-                    <td colSpan={5} className="px-6 py-4">
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="pt-3 font-bold">
-                            Document ID:{" "}
-                            <span className="font-normal">{record.doc_id}</span>
-                          </p>
-                          <p className="pt-3 font-bold">
-                            FR Document Number:{" "}
-                            <span className="font-normal">
-                              {record.frDocNum}
-                            </span>
-                          </p>
-                          <p className="pt-3 font-bold">
-                            Docket ID:{" "}
-                            <span className="font-normal">
-                              {record.docketId}
-                            </span>
-                          </p>
-                          <p className="pt-3 font-bold">
-                            Comment Period:{" "}
-                            <span className="font-normal">
-                              {formatDate(record.commentStartDate)} -{" "}
-                              {formatDate(record.commentEndDate)}
-                            </span>
-                          </p>
-                          {record.files && (
-                            <div className="mt-4">
-                              <FileDisplay filesJson={record.files} />
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <p className="pt-3 font-bold">Topics:</p>
-                          <div className="mt-1">
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {record.topics || "No topics listed"}
-                            </ReactMarkdown>
-                          </div>
-                          <div>
-                            <p className="pt-3 font-bold">AI Keywords:</p>
-                            <div className="mt-1">
-                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                {record.keywords || "No keywords available"}
-                              </ReactMarkdown>
-                            </div>
-                          </div>
-                          <div>
-                            <p className="pt-3 font-bold">AI Summary:</p>
-                            <div className="mt-1">
-                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                {record.summary || "No summary available"}
-                              </ReactMarkdown>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
+              <tr
+                key={record.doc_id}
+                onClick={(e) => handleRowClick(record.doc_id, e)}
+                className="cursor-pointer hover:bg-gray-50 dark:hover:bg-neutral-700"
+              >
+                <td
+                  className="px-6 py-4 whitespace-nowrap"
+                  data-click-stop="true"
+                >
+                  <input
+                    type="checkbox"
+                    checked={record.relevant}
+                    onChange={(e) =>
+                      handleRelevantToggle(record.doc_id, e.target.checked)
+                    }
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                  />
+                </td>
+                <td className="px-6 py-4 whitespace-normal">
+                  <div className="text-sm text-gray-900 dark:text-white">
+                    {record.doc_id}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-normal">
+                  <div className="text-sm text-gray-900 dark:text-white">
+                    {record.title}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900 dark:text-white">
+                    {record.documentType}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900 dark:text-white">
+                    {formatDate(record.postedDate)}
+                  </div>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
