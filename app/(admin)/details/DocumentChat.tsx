@@ -1,10 +1,8 @@
-// components/DocumentChat.tsx
-"use client";
-
-import { useState } from "react";
-import { Send, Loader2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Send, Loader2, AlertCircle, Bot, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Message {
   role: "user" | "assistant";
@@ -16,22 +14,68 @@ interface DocumentChatProps {
   documentTitle: string;
 }
 
-export const DocumentChat: React.FC<DocumentChatProps> = ({
+const DocumentChat = ({
   documentId,
   documentTitle,
-}) => {
+}: DocumentChatProps): JSX.Element => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
 
-  const sendMessage = async () => {
+  useEffect(() => {
+    if (messages.length > 0 && shouldAutoScroll) {
+      const chatContainer = chatContainerRef.current;
+      if (chatContainer) {
+        const isScrolledNearBottom =
+          chatContainer.scrollHeight - chatContainer.clientHeight <=
+          chatContainer.scrollTop + 100;
+
+        if (isScrolledNearBottom) {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        } else {
+          setHasUnreadMessages(true);
+        }
+      }
+    }
+  }, [messages, shouldAutoScroll]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    setHasUnreadMessages(false);
+  };
+
+  const handleScroll = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      const isScrolledNearBottom =
+        chatContainer.scrollHeight - chatContainer.clientHeight <=
+        chatContainer.scrollTop + 100;
+
+      if (isScrolledNearBottom) {
+        setHasUnreadMessages(false);
+      }
+
+      setShouldAutoScroll(isScrolledNearBottom);
+    }
+  };
+
+  const sendMessage = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
     setInput("");
+    setError(null);
     setIsLoading(true);
 
-    // Add user message immediately
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
 
     try {
@@ -40,29 +84,27 @@ export const DocumentChat: React.FC<DocumentChatProps> = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: userMessage,
-          documentId, // Pass the document ID to contextualize the chat
+          documentId,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to send message");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
 
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: data.response },
       ]);
     } catch (error) {
+      setError(error instanceof Error ? error.message : "An error occurred");
       console.error("Chat error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Sorry, I encountered an error processing your request.",
-        },
-      ]);
     } finally {
       setIsLoading(false);
     }
@@ -70,9 +112,9 @@ export const DocumentChat: React.FC<DocumentChatProps> = ({
 
   return (
     <Card className="flex flex-col h-[600px]">
-      <CardHeader className="pb-4 border-b">
+      <CardHeader className="flex-none pb-4 border-b">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-lime-500"></div>
+          <Bot className="h-5 w-5 text-lime-500" />
           Document Chat Assistant
         </CardTitle>
         <p className="text-sm text-muted-foreground">
@@ -80,63 +122,86 @@ export const DocumentChat: React.FC<DocumentChatProps> = ({
         </p>
       </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col p-0">
-        {/* Messages Container */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <CardContent className="flex-1 flex flex-col overflow-hidden p-0">
+        <div
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto min-h-0 p-4 space-y-4"
+          onScroll={handleScroll}
+        >
           {messages.length === 0 ? (
-            <div className="text-center text-muted-foreground text-sm py-8">
-              Start a conversation about this document
+            <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+              <Bot className="h-12 w-12 text-muted-foreground opacity-50" />
+              <div className="text-muted-foreground">
+                <p className="font-medium">Welcome to Document Chat!</p>
+                <p className="text-sm">
+                  Ask questions about this document to get started.
+                </p>
+              </div>
             </div>
           ) : (
-            messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
+            <div className="space-y-4">
+              {messages.map((message, index) => (
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                    message.role === "user"
-                      ? "bg-lime-500 text-white"
-                      : "bg-gray-100 dark:bg-neutral-800 text-foreground"
+                  key={index}
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap break-words text-sm">
-                    {message.content}
-                  </p>
+                  <div
+                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                      message.role === "user"
+                        ? "bg-lime-500 text-white"
+                        : "bg-gray-100 dark:bg-neutral-800 text-foreground"
+                    }`}
+                  >
+                    <p className="whitespace-pre-wrap break-words text-sm">
+                      {message.content}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 dark:bg-neutral-800 rounded-lg px-4 py-2">
-                <Loader2 className="h-5 w-5 animate-spin text-lime-500" />
-              </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 dark:bg-neutral-800 rounded-lg px-4 py-2">
+                    <Loader2 className="h-5 w-5 animate-spin text-lime-500" />
+                  </div>
+                </div>
+              )}
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
 
-        {/* Input Area */}
-        <div className="border-t p-4">
-          <div className="flex gap-2">
+        {hasUnreadMessages && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="absolute bottom-20 right-4 rounded-full shadow-lg"
+            onClick={scrollToBottom}
+          >
+            <ArrowDown className="h-4 w-4 mr-1" />
+            New messages
+          </Button>
+        )}
+
+        <div className="flex-none border-t p-4 bg-background">
+          <form onSubmit={sendMessage} className="flex gap-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              }}
               placeholder="Ask a question about this document..."
               className="flex-1 min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               disabled={isLoading}
             />
             <Button
-              onClick={sendMessage}
+              type="submit"
               disabled={isLoading || !input.trim()}
               className="bg-lime-500 hover:bg-lime-600 text-white"
             >
@@ -146,9 +211,11 @@ export const DocumentChat: React.FC<DocumentChatProps> = ({
                 <Send className="h-4 w-4" />
               )}
             </Button>
-          </div>
+          </form>
         </div>
       </CardContent>
     </Card>
   );
 };
+
+export default DocumentChat;
