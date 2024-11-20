@@ -36,7 +36,12 @@ const DocumentChat = ({
           chatContainer.scrollTop + 100;
 
         if (isScrolledNearBottom) {
-          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+          // Use scrollIntoView only for the chat container, not the whole page
+          messagesEndRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+            inline: "nearest",
+          });
         } else {
           setHasUnreadMessages(true);
         }
@@ -45,7 +50,14 @@ const DocumentChat = ({
   }, [messages, shouldAutoScroll]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Prevent page scroll by containing scroll behavior to the chat container
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }
     setHasUnreadMessages(false);
   };
 
@@ -125,7 +137,7 @@ const DocumentChat = ({
       <CardContent className="flex-1 flex flex-col overflow-hidden p-0">
         <div
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto min-h-0 p-4 space-y-4"
+          className="flex-1 overflow-y-auto min-h-0 p-4 space-y-4 scroll-smooth"
           onScroll={handleScroll}
         >
           {messages.length === 0 ? (
