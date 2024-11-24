@@ -8,9 +8,9 @@ Regulation 365 is a comprehensive web platform designed to help financial instit
 
 TBD
 
-### Slide Deck
+### Slides
 
-<div style="position:relative;width:100%;height:0;padding-bottom:56.25%;"><iframe allow="clipboard-write" allowfullscreen style="position:absolute; width: 100%; height: 100%;border: solid 1px #333;" src="https://www.beautiful.ai/embed/-OCUzDjv6-C1Th4CsERN?utm_source=beautiful_player&utm_medium=embed&utm_campaign=-OCUyFb1R5RsoENwNwvJ"></iframe><a href="https://www.beautiful.ai/embed/-OCUzDjv6-C1Th4CsERN?utm_source=beautiful_player&utm_medium=embed&utm_campaign=-OCUyFb1R5RsoENwNwvJ">View Regulation 365: Simplifying Regulatory Compliance - Final on Beautiful.ai</a></div>
+[View Presentation](https://www.beautiful.ai/player/-OCUzcy0fURUq_f5AJnk)
 
 ### Tech Stack
 
