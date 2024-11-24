@@ -101,7 +101,7 @@ export async function POST(req: Request) {
     // Query Pinecone with more detailed parameters
     const queryParams = {
       vector: embedding,
-      topK: 5,
+      topK: 10,
       filter: {
         filename: documentId,
       },

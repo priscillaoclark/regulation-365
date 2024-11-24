@@ -63,7 +63,7 @@ export async function POST(req: Request) {
     console.log("Querying Pinecone");
     const results = await indexWithNamespace.query({
       vector: embedding,
-      topK: 5,
+      topK: 10,
       includeMetadata: true,
     });
 
