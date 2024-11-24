@@ -4,6 +4,18 @@
 
 Regulation 365 is a comprehensive web platform designed to help financial institutions navigate and manage regulatory requirements. The platform provides real-time updates on financial regulations, enforcement actions, and regulatory changes across multiple US federal agencies.
 
+### Video
+
+TBD
+
+### Slide Deck
+
+<div style="position:relative;width:100%;height:0;padding-bottom:56.25%;"><iframe allow="clipboard-write" allowfullscreen style="position:absolute; width: 100%; height: 100%;border: solid 1px #333;" src="https://www.beautiful.ai/embed/-OCUzDjv6-C1Th4CsERN?utm_source=beautiful_player&utm_medium=embed&utm_campaign=-OCUyFb1R5RsoENwNwvJ"></iframe><a href="https://www.beautiful.ai/embed/-OCUzDjv6-C1Th4CsERN?utm_source=beautiful_player&utm_medium=embed&utm_campaign=-OCUyFb1R5RsoENwNwvJ">View Regulation 365: Simplifying Regulatory Compliance - Final on Beautiful.ai</a></div>
+
+### Tech Stack
+
+![Diagram](public/images/screenshots/diagram.png)
+
 ### Dashboard
 
 ![Platform Screenshot](public/images/screenshots/1.png)
