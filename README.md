@@ -6,7 +6,7 @@ Regulation 365 is a comprehensive web platform designed to help financial instit
 
 ### Video
 
-https://github.com/user-attachments/assets/7e074bfa-074e-462f-a9d4-4b4b29c5f295
+https://github.com/user-attachments/assets/bf66d925-36ea-4e27-a91a-d9aa86f3f704
 
 ### Slides
 
