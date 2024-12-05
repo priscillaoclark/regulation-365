@@ -84,7 +84,7 @@ const ComplianceLanding: React.FC = () => {
           quality={90}
         />
         <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 container mx-auto px-4 py-16 text-center">
+        <div className="relative z-10 container mx-auto px-4 py-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -123,7 +123,7 @@ const ComplianceLanding: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-16">
+      <section id="features" className="container mx-auto px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -169,8 +169,28 @@ const ComplianceLanding: React.FC = () => {
         </motion.div>
       </section>
 
+      <section id="features" className="container mx-auto px-4 py-10">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">Screenshots</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Image
+            src="/images/screenshots/2.png"
+            alt="Screenshot 2"
+            layout="responsive"
+            width={1920}
+            height={1080}
+          />
+          <Image
+            src="/images/screenshots/3.png"
+            alt="Screenshot 3"
+            layout="responsive"
+            width={1920}
+            height={1080}
+          />
+        </div>
+      </section>
+
       {/* Posts Carousel Section */}
-      <section id="posts" className="container mx-auto px-4 py-16">
+      <section id="posts" className="container mx-auto px-4 py-10">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -192,7 +212,7 @@ const ComplianceLanding: React.FC = () => {
       </section>
 
       {/* Covered Agencies Section */}
-      <section id="agencies" className="container mx-auto px-4 py-16">
+      <section id="agencies" className="container mx-auto px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
