@@ -274,9 +274,7 @@ const ComplianceLanding: React.FC = () => {
               size="lg"
               className="bg-lime-500 hover:bg-lime-400 text-white"
             >
-              <Link href="https://regulation-365.ghost.io/#/portal/signup">
-                Subscribe for News and Product Updates
-              </Link>
+              Coming soon!
             </Button>
           </motion.div>
         </div>

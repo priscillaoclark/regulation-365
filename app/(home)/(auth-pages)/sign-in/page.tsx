@@ -61,12 +61,6 @@ export default function Login({ searchParams }: { searchParams: Message }) {
             <div className="text-sm text-muted-foreground text-center">
               New app sign-ups coming soon!
             </div>
-            <Link
-              className="text-sm text-center text-lime-500 hover:underline font-medium"
-              href="https://regulation-365.ghost.io/#/portal/signup"
-            >
-              Subscribe to our newsletter to get notified when we launch
-            </Link>
           </CardFooter>
         </Card>
       </div>
