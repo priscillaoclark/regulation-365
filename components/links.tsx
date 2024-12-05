@@ -19,12 +19,6 @@ const Links = () => {
         } md:flex flex-col md:flex-row md:space-x-4 mt-2 md:mt-0 absolute md:relative bg-lime-400 md:bg-transparent w-full md:w-auto right-0 z-50`}
       >
         <Link
-          href="https://regulation-365.ghost.io/"
-          className="block px-4 py-2 md:inline-block hover:text-gray-400"
-        >
-          Blog
-        </Link>
-        <Link
           href="/news"
           className="block px-4 py-2 md:inline-block hover:text-gray-400"
         >
